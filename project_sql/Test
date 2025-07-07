@@ -1,0 +1,18 @@
+-- Find the count of remote job postings per skill
+WITH remote_skills AS (
+
+SELECT sd.skill_id, Count(sd.*) as skill_count
+FROM skills_job_dim sd
+INNER JOIN job_postings_fact f
+ON f.job_id = sd.job_id
+WHERE f.job_work_from_home = TRUE
+GROUP BY skill_id
+
+)
+
+SELECT s.skill_id, s.skills, rs.skill_count       
+FROM remote_skills rs
+INNER JOIN skills_dim s
+ON rs.skill_id = s.skill_id
+ORDER BY rs.skill_count DESC
+LIMIT 5;
